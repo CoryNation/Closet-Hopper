@@ -52,16 +52,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     // Generate license key
     const licenseKey = generateLicenseKey();
     
-    // Find or create user
+    // Find user by email (don't create new users here)
     let user = null;
     if (session.customer_email) {
-      user = await prisma.user.upsert({
+      user = await prisma.user.findUnique({
         where: { email: session.customer_email },
-        update: {},
-        create: {
-          email: session.customer_email,
-          name: session.customer_details?.name || null,
-        },
       });
     }
     

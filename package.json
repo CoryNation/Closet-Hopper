@@ -1,0 +1,15 @@
+{
+  "name": "closet-hopper",
+  "version": "1.0.0",
+  "description": "Migrate eBay listings to Poshmark with drag & drop",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Use individual package scripts'",
+    "build": "echo 'Use individual package scripts'",
+    "lint": "echo 'Use individual package scripts'",
+    "clean": "echo 'Use individual package scripts'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
