@@ -24,7 +24,7 @@ const steps = [
   {
     number: '4',
     title: 'Review & Publish',
-    description: 'ClosetHopper fills everything in - you just review and publish',
+    description: 'Closet Hopper fills everything in - you just review and publish',
     icon: '✅'
   }
 ]

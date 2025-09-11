@@ -80,7 +80,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <Link href="/" className="text-2xl font-bold text-poshmark-pink">
-              🦘 ClosetHopper
+              🦘 Closet Hopper
             </Link>
             <div className="flex items-center space-x-4">
               <span className="text-gray-700">Welcome, {user?.name || user?.email}</span>
@@ -101,7 +101,7 @@ export default function DashboardPage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Your Licenses</h1>
             <p className="mt-2 text-gray-600">
-              Manage your ClosetHopper licenses and purchase additional ones.
+              Manage your Closet Hopper licenses and purchase additional ones.
             </p>
           </div>
 
@@ -194,7 +194,7 @@ export default function DashboardPage() {
             <div className="bg-white p-6 rounded-lg shadow">
               <h4 className="font-medium text-gray-900 mb-2">Get Help</h4>
               <p className="text-sm text-gray-600 mb-4">
-                Need assistance with ClosetHopper?
+                Need assistance with Closet Hopper?
               </p>
               <button className="text-poshmark-pink hover:text-poshmark-pink-dark text-sm font-medium">
                 Contact Support →
@@ -204,7 +204,7 @@ export default function DashboardPage() {
             <div className="bg-white p-6 rounded-lg shadow">
               <h4 className="font-medium text-gray-900 mb-2">Tutorial</h4>
               <p className="text-sm text-gray-600 mb-4">
-                Learn how to use ClosetHopper effectively.
+                Learn how to use Closet Hopper effectively.
               </p>
               <button className="text-poshmark-pink hover:text-poshmark-pink-dark text-sm font-medium">
                 Watch Tutorial →

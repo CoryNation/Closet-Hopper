@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-2xl font-bold mb-4">🦘 ClosetHopper</h3>
+            <h3 className="text-2xl font-bold mb-4">🦘 Closet Hopper</h3>
             <p className="text-gray-400">
               Migrate your eBay listings to Poshmark with drag & drop simplicity.
             </p>
@@ -40,11 +40,11 @@ export default function Footer() {
         
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
           <p>
-            ClosetHopper is not affiliated with eBay or Poshmark. 
+            Closet Hopper is not affiliated with eBay or Poshmark. 
             All trademarks are property of their respective owners.
           </p>
           <p className="mt-2">
-            © 2024 ClosetHopper. All rights reserved.
+            © 2024 Closet Hopper. All rights reserved.
           </p>
         </div>
       </div>

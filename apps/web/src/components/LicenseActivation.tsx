@@ -41,7 +41,7 @@ export default function LicenseActivation({ onActivate, onCancel }: LicenseActiv
       <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Activate License</h2>
         <p className="text-gray-600 mb-6">
-          Enter your ClosetHopper license key to activate the extension.
+          Enter your Closet Hopper license key to activate the extension.
         </p>
 
         {error && (

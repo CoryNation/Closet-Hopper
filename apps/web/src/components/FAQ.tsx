@@ -47,7 +47,7 @@ export default function FAQ() {
             Frequently Asked Questions
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Everything you need to know about ClosetHopper
+            Everything you need to know about Closet Hopper
           </p>
         </motion.div>
 
