@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Closet Hopper",
+  "version": "1.0.0",
+  "description": "Migrate your eBay listings to Poshmark with drag & drop. One-time purchase, lifetime access.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://poshmark.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://poshmark.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Closet Hopper"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["https://poshmark.com/*"]
+    }
+  ],
+  "externally_connectable": {
+    "matches": ["https://closethopper.com/*"]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@closet-hopper/desktop",
+  "version": "1.0.0",
+  "description": "Closet Hopper Desktop App",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc && electron-builder",
+    "dev": "tsc && electron .",
+    "dist": "npm run build && electron-builder --publish=never",
+    "pack": "npm run build && electron-builder --dir"
+  },
+  "dependencies": {
+    "electron": "^27.0.0",
+    "electron-store": "^8.1.0",
+    "axios": "^1.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "electron-builder": "^24.6.4",
+    "@types/node": "^20.8.0"
+  },
+  "build": {
+    "appId": "com.closethopper.desktop",
+    "productName": "Closet Hopper",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}
