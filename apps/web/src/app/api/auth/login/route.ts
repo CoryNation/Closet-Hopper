@@ -38,16 +38,14 @@ export async function POST(req: NextRequest) {
     // Generate token
     const token = generateToken({
       id: user.id,
-      email: user.email,
-      name: user.name || undefined
+      email: user.email
     });
 
     // Return user data (without password) and token
     return NextResponse.json({
       user: {
         id: user.id,
-        email: user.email,
-        name: user.name
+        email: user.email
       },
       token
     });
