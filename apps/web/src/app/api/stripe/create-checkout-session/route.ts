@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from 'stripe';
 import { verifyToken, getTokenFromRequest } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
@@ -8,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { priceId, licenseType, successUrl, cancelUrl } = await req.json();
+    const { priceId, licenseType, promoCodeId, successUrl, cancelUrl } = await req.json();
 
     if (!priceId || !licenseType) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
@@ -23,6 +24,18 @@ export async function POST(req: NextRequest) {
     const payload = verifyToken(token);
     if (!payload) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
+
+    // Get promo code details if provided
+    let promoCode = null;
+    if (promoCodeId) {
+      promoCode = await prisma.promoCode.findUnique({
+        where: { id: promoCodeId }
+      });
+      
+      if (!promoCode) {
+        return NextResponse.json({ error: 'Invalid promo code' }, { status: 400 });
+      }
     }
 
     // Create checkout session
@@ -41,6 +54,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         licenseType,
         userId: payload.id,
+        promoCodeId: promoCodeId || '',
       },
     });
 

@@ -25,7 +25,6 @@ export async function GET(req: NextRequest) {
       select: {
         id: true,
         email: true,
-        name: true,
         createdAt: true,
         licenses: {
           select: {
@@ -33,7 +32,12 @@ export async function GET(req: NextRequest) {
             key: true,
             plan: true,
             status: true,
-            createdAt: true
+            createdAt: true,
+            isGift: true,
+            giftRecipientEmail: true,
+            giftMessage: true,
+            redeemedAt: true,
+            redeemedBy: true
           }
         }
       }

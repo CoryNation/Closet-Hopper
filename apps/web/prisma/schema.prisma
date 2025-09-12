@@ -13,18 +13,18 @@ datasource db {
 model User {
   id        String    @id @default(cuid())
   email     String    @unique
-  name      String?
   password  String    // hashed password
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   licenses  License[]
+  promoCodeUsages PromoCodeUsage[]
 }
 
 model License {
   id           String   @id @default(cuid())
   key          String   @unique
   plan         String   // "first" | "additional"
-  status       String   @default("active") // "active" | "revoked" | "refunded"
+  status       String   @default("available") // "available" | "used" | "revoked" | "refunded"
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   activations  Activation[]
@@ -32,6 +32,16 @@ model License {
   user         User?    @relation(fields: [userId], references: [id])
   stripePaymentIntentId String? // Stripe payment intent ID
   stripeSessionId       String? // Stripe checkout session ID
+  
+  // Gift license fields
+  isGift       Boolean  @default(false)
+  giftRecipientEmail String? // Email of the person who will receive the gift
+  giftMessage  String? // Optional message from the gifter
+  redeemedAt   DateTime? // When the gift was redeemed
+  redeemedBy   String? // Email of who redeemed the gift
+  
+  // Promo code fields
+  promoCodeUsage PromoCodeUsage?
 }
 
 model Activation {
@@ -43,4 +53,36 @@ model Activation {
   license     License  @relation(fields: [licenseId], references: [id], onDelete: Cascade)
 
   @@unique([licenseId, profileHash]) // one activation per license/profile
+}
+
+model PromoCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String?  // Optional description of the promo
+  discountType String  // "percentage" | "fixed" | "free"
+  discountValue Float  // Percentage (0-100) or fixed amount in cents
+  maxUses     Int?     // Optional limit on total uses
+  usedCount   Int      @default(0) // Track how many times it's been used
+  validFrom   DateTime @default(now())
+  validUntil  DateTime? // Optional expiration date
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Track which users have used this promo code
+  usages      PromoCodeUsage[]
+}
+
+model PromoCodeUsage {
+  id          String   @id @default(cuid())
+  promoCodeId String
+  userId      String
+  licenseId   String?  @unique // Optional link to the license created with this promo
+  usedAt      DateTime @default(now())
+  
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  license     License?  @relation(fields: [licenseId], references: [id])
+  
+  @@unique([promoCodeId, userId]) // One use per user per promo code
 }

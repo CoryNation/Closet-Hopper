@@ -4,7 +4,7 @@ import { hashPassword, generateToken } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, name } = await req.json();
+    const { email, password } = await req.json();
 
     // Validate input
     if (!email || !password) {
@@ -39,24 +39,21 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: {
         email,
-        password: hashedPassword,
-        name: name || null
+        password: hashedPassword
       }
     });
 
     // Generate token
     const token = generateToken({
       id: user.id,
-      email: user.email,
-      name: user.name || undefined
+      email: user.email
     });
 
     // Return user data (without password) and token
     return NextResponse.json({
       user: {
         id: user.id,
-        email: user.email,
-        name: user.name
+        email: user.email
       },
       token
     });

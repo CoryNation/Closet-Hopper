@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
@@ -23,7 +22,7 @@ export default function SignupPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password }),
       })
 
       const data = await response.json()
@@ -72,23 +71,6 @@ export default function SignupPage() {
               </div>
             )}
             
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-poshmark-pink focus:border-poshmark-pink sm:text-sm"
-                />
-              </div>
-            </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">

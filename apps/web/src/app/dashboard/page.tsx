@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import StripeCheckout from '@/components/StripeCheckout'
+import LicenseCard from '@/components/LicenseCard'
 
 interface License {
   id: string
@@ -12,6 +13,11 @@ interface License {
   createdAt: string
   activations: number
   maxSeats: number
+  isGift?: boolean
+  giftRecipientEmail?: string
+  giftMessage?: string
+  redeemedAt?: string
+  redeemedBy?: string
 }
 
 export default function DashboardPage() {
@@ -62,6 +68,40 @@ export default function DashboardPage() {
     window.location.href = '/login';
   }
 
+  const handleLicenseTransfer = async (licenseId: string, recipientEmail: string, message?: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/licenses/transfer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          licenseId,
+          recipientEmail,
+          message
+        })
+      });
+
+      if (response.ok) {
+        // Refresh the page to show updated license
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        alert(`Transfer failed: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Transfer error:', error);
+      alert('Transfer failed. Please try again.');
+    }
+  }
+
+  const handleLicenseDeploy = async (licenseId: string) => {
+    // This would typically open the extension installation or provide download link
+    alert('Extension deployment functionality would be implemented here');
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -83,7 +123,7 @@ export default function DashboardPage() {
               🦘 Closet Hopper
             </Link>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Welcome, {user?.name || user?.email}</span>
+              <span className="text-gray-700">Welcome, {user?.email}</span>
               <button 
                 onClick={handleLogout}
                 className="text-gray-500 hover:text-gray-700"
@@ -108,84 +148,74 @@ export default function DashboardPage() {
           {/* License Cards */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {licenses.map((license) => (
-              <div key={license.id} className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium text-gray-900">
-                      {license.plan === 'pro' ? 'Pro License' : 'Basic License'}
-                    </h3>
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      license.status === 'active' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {license.status}
-                    </span>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">License Key</label>
-                      <p className="text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
-                        {license.key}
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Activations</label>
-                      <p className="text-sm text-gray-900">
-                        {license.activations} / {license.maxSeats} browser profiles
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Created</label>
-                      <p className="text-sm text-gray-900">
-                        {new Date(license.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 flex space-x-3">
-                    <button className="flex-1 bg-poshmark-pink text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-poshmark-pink-dark">
-                      Download Extension
-                    </button>
-                    <button className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300">
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <LicenseCard
+                key={license.id}
+                license={license}
+                onTransfer={handleLicenseTransfer}
+                onDeploy={handleLicenseDeploy}
+              />
             ))}
           </div>
 
-          {/* Purchase Additional License */}
+          {/* Purchase License Section */}
           <div className="mt-8 bg-white shadow rounded-lg">
             <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Need More Licenses?
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Purchase additional licenses for other browsers or team members. 
-                Additional licenses are discounted 40% from the original price.
-              </p>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-poshmark-pink">$34</p>
-                  <p className="text-sm text-gray-500">40% off original price</p>
-                </div>
-                <StripeCheckout 
-                  priceId={process.env.NEXT_PUBLIC_STRIPE_ADDITIONAL_LICENSE_PRICE_ID!}
-                  licenseType="additional"
-                  onSuccess={() => {
-                    // Refresh the page to show new license
-                    window.location.reload();
-                  }}
-                  onError={(error) => {
-                    alert(`Payment error: ${error}`);
-                  }}
-                />
-              </div>
+              {licenses.length === 0 ? (
+                // First license purchase
+                <>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">
+                    Get Started with Closet Hopper
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Purchase your first license to start moving your eBay listings to Poshmark.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-2xl font-bold text-poshmark-pink">$57</p>
+                      <p className="text-sm text-gray-500">One-time payment, lifetime access</p>
+                    </div>
+                    <StripeCheckout 
+                      priceId={process.env.NEXT_PUBLIC_STRIPE_FIRST_LICENSE_PRICE_ID!}
+                      licenseType="first"
+                      onSuccess={() => {
+                        // Refresh the page to show new license
+                        window.location.reload();
+                      }}
+                      onError={(error) => {
+                        alert(`Payment error: ${error}`);
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                // Additional license purchase
+                <>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">
+                    Buy Additional Licenses
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Purchase additional licenses for other browsers, team members, or as gifts. 
+                    Additional licenses are discounted 40% from the original price.
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-2xl font-bold text-poshmark-pink">$34</p>
+                      <p className="text-sm text-gray-500">40% off original price</p>
+                    </div>
+                    <StripeCheckout 
+                      priceId={process.env.NEXT_PUBLIC_STRIPE_ADDITIONAL_LICENSE_PRICE_ID!}
+                      licenseType="additional"
+                      onSuccess={() => {
+                        // Refresh the page to show new license
+                        window.location.reload();
+                      }}
+                      onError={(error) => {
+                        alert(`Payment error: ${error}`);
+                      }}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

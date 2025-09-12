@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
+import PromoCodeInput from './PromoCodeInput'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -14,6 +15,7 @@ interface StripeCheckoutProps {
 
 export default function StripeCheckout({ priceId, licenseType, onSuccess, onError }: StripeCheckoutProps) {
   const [loading, setLoading] = useState(false)
+  const [appliedPromo, setAppliedPromo] = useState<any>(null)
 
   const handleCheckout = async () => {
     setLoading(true)
@@ -40,6 +42,7 @@ export default function StripeCheckout({ priceId, licenseType, onSuccess, onErro
         body: JSON.stringify({
           priceId,
           licenseType,
+          promoCodeId: appliedPromo?.id,
           successUrl: `${window.location.origin}/dashboard?success=true`,
           cancelUrl: `${window.location.origin}/pricing?canceled=true`,
         }),
@@ -67,13 +70,41 @@ export default function StripeCheckout({ priceId, licenseType, onSuccess, onErro
     }
   }
 
+  const calculatePrice = () => {
+    const basePrice = licenseType === 'first' ? 5700 : 3400 // in cents
+    if (!appliedPromo) return basePrice
+
+    if (appliedPromo.discountType === 'free') return 0
+    if (appliedPromo.discountType === 'percentage') {
+      return Math.round(basePrice * (1 - appliedPromo.discountValue / 100))
+    }
+    if (appliedPromo.discountType === 'fixed') {
+      return Math.max(0, basePrice - appliedPromo.discountValue)
+    }
+    return basePrice
+  }
+
+  const displayPrice = () => {
+    const price = calculatePrice()
+    if (price === 0) return 'Free'
+    return `$${(price / 100).toFixed(2)}`
+  }
+
   return (
-    <button
-      onClick={handleCheckout}
-      disabled={loading}
-      className="w-full bg-poshmark-pink hover:bg-poshmark-pink-dark text-white font-semibold py-4 px-8 rounded-lg transition-colors text-lg disabled:opacity-50"
-    >
-      {loading ? 'Processing...' : `Buy ${licenseType === 'first' ? 'License' : 'Additional License'} - $${licenseType === 'first' ? '57' : '34'}`}
-    </button>
+    <div className="space-y-4">
+      <PromoCodeInput
+        onPromoApplied={setAppliedPromo}
+        onPromoRemoved={() => setAppliedPromo(null)}
+        appliedPromo={appliedPromo}
+      />
+      
+      <button
+        onClick={handleCheckout}
+        disabled={loading}
+        className="w-full bg-poshmark-pink hover:bg-poshmark-pink-dark text-white font-semibold py-4 px-8 rounded-lg transition-colors text-lg disabled:opacity-50"
+      >
+        {loading ? 'Processing...' : `Buy ${licenseType === 'first' ? 'License' : 'Additional License'} - ${displayPrice()}`}
+      </button>
+    </div>
   )
 }

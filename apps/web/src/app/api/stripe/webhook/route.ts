@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   try {
-    const { licenseType, userId } = session.metadata!;
+    const { licenseType, userId, promoCodeId } = session.metadata!;
     
     // Generate license key
     const licenseKey = generateLicenseKey();
@@ -65,12 +65,33 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       data: {
         key: licenseKey,
         plan: licenseType || 'first',
-        status: 'active',
+        status: 'available',
         userId: user?.id,
         stripePaymentIntentId: session.payment_intent as string,
         stripeSessionId: session.id,
       },
     });
+
+    // Handle promo code usage if applicable
+    if (promoCodeId && user?.id) {
+      await prisma.promoCodeUsage.create({
+        data: {
+          promoCodeId,
+          userId: user.id,
+          licenseId: license.id,
+        },
+      });
+
+      // Update promo code usage count
+      await prisma.promoCode.update({
+        where: { id: promoCodeId },
+        data: {
+          usedCount: {
+            increment: 1,
+          },
+        },
+      });
+    }
 
     console.log('License created:', {
       id: license.id,
