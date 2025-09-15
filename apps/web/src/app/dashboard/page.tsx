@@ -175,7 +175,6 @@ export default function DashboardPage() {
                       <p className="text-sm text-gray-500">One-time payment, lifetime access</p>
                     </div>
                     <StripeCheckout 
-                      priceId={process.env.NEXT_PUBLIC_STRIPE_FIRST_LICENSE_PRICE_ID!}
                       licenseType="first"
                       onSuccess={() => {
                         // Refresh the page to show new license
@@ -203,7 +202,6 @@ export default function DashboardPage() {
                       <p className="text-sm text-gray-500">40% off original price</p>
                     </div>
                     <StripeCheckout 
-                      priceId={process.env.NEXT_PUBLIC_STRIPE_ADDITIONAL_LICENSE_PRICE_ID!}
                       licenseType="additional"
                       onSuccess={() => {
                         // Refresh the page to show new license
