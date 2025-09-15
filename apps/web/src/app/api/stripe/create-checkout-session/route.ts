@@ -38,15 +38,57 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Calculate pricing
+    const basePrice = licenseType === 'first' ? 5700 : 3400 // in cents
+    let finalPrice = basePrice
+    let discountAmount = 0
+
+    if (promoCode) {
+      if (promoCode.discountType === 'free') {
+        finalPrice = 0
+        discountAmount = basePrice
+      } else if (promoCode.discountType === 'percentage') {
+        discountAmount = Math.round(basePrice * (promoCode.discountValue / 100))
+        finalPrice = basePrice - discountAmount
+      } else if (promoCode.discountType === 'fixed') {
+        discountAmount = promoCode.discountValue
+        finalPrice = Math.max(0, basePrice - discountAmount)
+      }
+    }
+
+    // Create line items with discount
+    const lineItems: any[] = [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: licenseType === 'first' ? 'Closet Hopper License' : 'Additional Closet Hopper License',
+            description: 'One-time payment for lifetime access',
+          },
+          unit_amount: basePrice,
+        },
+        quantity: 1,
+      },
+    ]
+
+    // Add discount line item if there's a discount
+    if (discountAmount > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `Discount (${promoCode?.code})`,
+          },
+          unit_amount: -discountAmount, // Negative amount for discount
+        },
+        quantity: 1,
+      })
+    }
+
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems,
       mode: 'payment',
       success_url: successUrl,
       cancel_url: cancelUrl,
@@ -55,6 +97,9 @@ export async function POST(req: NextRequest) {
         licenseType,
         userId: payload.id,
         promoCodeId: promoCodeId || '',
+        originalPrice: basePrice.toString(),
+        finalPrice: finalPrice.toString(),
+        discountAmount: discountAmount.toString(),
       },
     });
 
