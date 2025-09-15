@@ -33,19 +33,23 @@ export default function StripeCheckout({ priceId, licenseType, onSuccess, onErro
       }
 
       // Create checkout session
+      const requestBody = {
+        priceId,
+        licenseType,
+        promoCodeId: appliedPromo?.id,
+        successUrl: `${window.location.origin}/dashboard?success=true`,
+        cancelUrl: `${window.location.origin}/pricing?canceled=true`,
+      };
+      
+      console.log('Creating checkout session with:', requestBody);
+      
       const response = await fetch('/api/stripe/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          priceId,
-          licenseType,
-          promoCodeId: appliedPromo?.id,
-          successUrl: `${window.location.origin}/dashboard?success=true`,
-          cancelUrl: `${window.location.origin}/pricing?canceled=true`,
-        }),
+        body: JSON.stringify(requestBody),
       })
 
       const session = await response.json()

@@ -29,12 +29,20 @@ export async function POST(req: NextRequest) {
     // Get promo code details if provided
     let promoCode = null;
     if (promoCodeId) {
-      promoCode = await prisma.promoCode.findUnique({
-        where: { id: promoCodeId }
-      });
-      
-      if (!promoCode) {
-        return NextResponse.json({ error: 'Invalid promo code' }, { status: 400 });
+      try {
+        promoCode = await prisma.promoCode.findUnique({
+          where: { id: promoCodeId }
+        });
+        
+        if (!promoCode) {
+          console.error('Promo code not found:', promoCodeId);
+          return NextResponse.json({ error: 'Invalid promo code' }, { status: 400 });
+        }
+        
+        console.log('Found promo code:', promoCode.code, promoCode.discountType, promoCode.discountValue);
+      } catch (error) {
+        console.error('Error fetching promo code:', error);
+        return NextResponse.json({ error: 'Failed to validate promo code' }, { status: 500 });
       }
     }
 
