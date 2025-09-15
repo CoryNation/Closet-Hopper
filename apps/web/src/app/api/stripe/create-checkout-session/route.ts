@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Create line items with discount
+    // Create line items - show original price and discount separately
     const lineItems: any[] = [
       {
         price_data: {
@@ -82,24 +82,16 @@ export async function POST(req: NextRequest) {
             name: licenseType === 'first' ? 'Closet Hopper License' : 'Additional Closet Hopper License',
             description: 'One-time payment for lifetime access',
           },
-          unit_amount: basePrice,
+          unit_amount: basePrice, // Always show original price
         },
         quantity: 1,
       },
     ]
 
-    // Add discount line item if there's a discount
-    if (discountAmount > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: `Discount (${promoCode?.code})`,
-          },
-          unit_amount: -discountAmount, // Negative amount for discount
-        },
-        quantity: 1,
-      })
+    // For free items, create a $0 line item
+    if (finalPrice === 0) {
+      lineItems[0].price_data.unit_amount = 0;
+      lineItems[0].price_data.product_data.description = `Free with ${promoCode?.code} promo code`;
     }
 
     console.log('Creating Stripe session with line items:', lineItems);
