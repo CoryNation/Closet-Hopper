@@ -52,6 +52,11 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
 
       const session = await response.json()
       
+      if (!response.ok) {
+        console.error('API Error Response:', session);
+        throw new Error(session.error || `HTTP ${response.status}: ${response.statusText}`)
+      }
+      
       if (session.error) {
         throw new Error(session.error)
       }

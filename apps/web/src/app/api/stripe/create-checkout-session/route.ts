@@ -9,20 +9,29 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { licenseType, promoCodeId, successUrl, cancelUrl } = await req.json();
+    console.log('=== Stripe Checkout Session Request ===');
+    const body = await req.json();
+    console.log('Request body:', body);
+    
+    const { licenseType, promoCodeId, successUrl, cancelUrl } = body;
 
     if (!licenseType) {
+      console.error('Missing licenseType parameter');
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
     // Get user from authentication
     const token = getTokenFromRequest(req);
+    console.log('Token found:', !!token);
     if (!token) {
+      console.error('No authentication token provided');
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const payload = verifyToken(token);
+    console.log('Token payload:', payload);
     if (!payload) {
+      console.error('Invalid token');
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
@@ -93,6 +102,9 @@ export async function POST(req: NextRequest) {
       })
     }
 
+    console.log('Creating Stripe session with line items:', lineItems);
+    console.log('Final price:', finalPrice, 'cents');
+    
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -111,6 +123,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log('Stripe session created successfully:', session.id);
     return NextResponse.json({ id: session.id });
   } catch (error) {
     console.error('Stripe checkout session error:', error);
