@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Pricing from '@/components/Pricing'
 
-export default function PricingPage() {
+function PricingContent() {
   const searchParams = useSearchParams()
   const [message, setMessage] = useState('')
 
@@ -38,5 +38,20 @@ export default function PricingPage() {
         <Pricing />
       </div>
     </div>
+  )
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-poshmark-pink mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading pricing...</p>
+        </div>
+      </div>
+    }>
+      <PricingContent />
+    </Suspense>
   )
 }
