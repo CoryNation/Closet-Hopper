@@ -9,9 +9,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { priceId, licenseType, promoCodeId, successUrl, cancelUrl } = await req.json();
+    const { licenseType, promoCodeId, successUrl, cancelUrl } = await req.json();
 
-    if (!priceId || !licenseType) {
+    if (!licenseType) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 

@@ -7,13 +7,12 @@ import PromoCodeInput from './PromoCodeInput'
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 interface StripeCheckoutProps {
-  priceId: string
   licenseType: 'first' | 'additional'
   onSuccess?: () => void
   onError?: (error: string) => void
 }
 
-export default function StripeCheckout({ priceId, licenseType, onSuccess, onError }: StripeCheckoutProps) {
+export default function StripeCheckout({ licenseType, onSuccess, onError }: StripeCheckoutProps) {
   const [loading, setLoading] = useState(false)
   const [appliedPromo, setAppliedPromo] = useState<any>(null)
 
@@ -34,7 +33,6 @@ export default function StripeCheckout({ priceId, licenseType, onSuccess, onErro
 
       // Create checkout session
       const requestBody = {
-        priceId,
         licenseType,
         promoCodeId: appliedPromo?.id,
         successUrl: `${window.location.origin}/dashboard?success=true`,

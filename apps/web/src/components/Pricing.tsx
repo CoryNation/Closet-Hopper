@@ -89,7 +89,6 @@ export default function Pricing() {
               ) : user ? (
                 <>
                   <StripeCheckout 
-                    priceId={process.env.NEXT_PUBLIC_STRIPE_FIRST_LICENSE_PRICE_ID!}
                     licenseType="first"
                     onSuccess={() => {
                       // Redirect to dashboard or show success message
