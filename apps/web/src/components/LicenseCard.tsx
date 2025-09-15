@@ -133,6 +133,26 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
         <div className="mt-4 space-y-3">
           {license.status === 'available' && (
             <>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h4 className="text-sm font-medium text-blue-900 mb-2">How to Activate Your License:</h4>
+                <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                  <li>Download the Closet Hopper browser extension</li>
+                  <li>Install it in your browser</li>
+                  <li>Click "Deploy to Browser" below</li>
+                  <li>Enter your license key when prompted</li>
+                </ol>
+                <div className="mt-3">
+                  <a 
+                    href="https://chrome.google.com/webstore/detail/closet-hopper/your-extension-id" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500"
+                  >
+                    Download Extension →
+                  </a>
+                </div>
+              </div>
+              
               <button 
                 onClick={() => onDeploy?.(license.id)}
                 className="w-full bg-poshmark-pink text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-poshmark-pink-dark"

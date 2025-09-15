@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import PromoCodeInput from './PromoCodeInput'
 
@@ -15,6 +15,37 @@ interface StripeCheckoutProps {
 export default function StripeCheckout({ licenseType, onSuccess, onError }: StripeCheckoutProps) {
   const [loading, setLoading] = useState(false)
   const [appliedPromo, setAppliedPromo] = useState<any>(null)
+  const [autoAppliedPromo, setAutoAppliedPromo] = useState<any>(null)
+
+  // Auto-apply additional license discount
+  useEffect(() => {
+    if (licenseType === 'additional') {
+      fetchAdditionalLicensePromo()
+    }
+  }, [licenseType])
+
+  const fetchAdditionalLicensePromo = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+
+      const response = await fetch('/api/promo/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ code: 'ADDITIONAL40' })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setAutoAppliedPromo(data.promoCode)
+      }
+    } catch (error) {
+      console.error('Failed to fetch additional license promo:', error)
+    }
+  }
 
   const handleCheckout = async () => {
     setLoading(true)
@@ -31,10 +62,16 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
         throw new Error('Please sign in to purchase');
       }
 
+      // Auto-apply additional license discount if no promo code is manually applied
+      let finalPromoCodeId = appliedPromo?.id;
+      if (!appliedPromo && licenseType === 'additional' && autoAppliedPromo) {
+        finalPromoCodeId = autoAppliedPromo.id;
+      }
+
       // Create checkout session
       const requestBody = {
         licenseType,
-        promoCodeId: appliedPromo?.id,
+        promoCodeId: finalPromoCodeId,
         successUrl: `${window.location.origin}/dashboard?success=true`,
         cancelUrl: `${window.location.origin}/pricing?canceled=true`,
       };
@@ -79,14 +116,15 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
 
   const calculatePrice = () => {
     const basePrice = licenseType === 'first' ? 5700 : 3400 // in cents
-    if (!appliedPromo) return basePrice
+    const promo = appliedPromo || autoAppliedPromo
+    if (!promo) return basePrice
 
-    if (appliedPromo.discountType === 'free') return 0
-    if (appliedPromo.discountType === 'percentage') {
-      return Math.round(basePrice * (1 - appliedPromo.discountValue / 100))
+    if (promo.discountType === 'free') return 0
+    if (promo.discountType === 'percentage') {
+      return Math.round(basePrice * (1 - promo.discountValue / 100))
     }
-    if (appliedPromo.discountType === 'fixed') {
-      return Math.max(0, basePrice - appliedPromo.discountValue)
+    if (promo.discountType === 'fixed') {
+      return Math.max(0, basePrice - promo.discountValue)
     }
     return basePrice
   }
@@ -99,6 +137,26 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
 
   return (
     <div className="space-y-4">
+      {autoAppliedPromo && !appliedPromo && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-green-800">
+                Auto-applied discount: {autoAppliedPromo.code}
+              </p>
+              <p className="text-sm text-green-600">
+                {autoAppliedPromo.discountType === 'percentage' 
+                  ? `${autoAppliedPromo.discountValue}% off`
+                  : autoAppliedPromo.discountType === 'fixed'
+                  ? `$${(autoAppliedPromo.discountValue / 100).toFixed(2)} off`
+                  : 'Free license'
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <PromoCodeInput
         onPromoApplied={setAppliedPromo}
         onPromoRemoved={() => setAppliedPromo(null)}
