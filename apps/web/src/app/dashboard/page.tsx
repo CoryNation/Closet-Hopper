@@ -102,6 +102,36 @@ export default function DashboardPage() {
     alert('Extension deployment functionality would be implemented here');
   }
 
+  const handleManualLicenseCreation = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/licenses/create-manual', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          licenseType: 'first',
+          stripeSessionId: `manual-${Date.now()}`
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`License created successfully! Key: ${data.license.key}`);
+        // Refresh the page to show new license
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        alert(`Failed to create license: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Manual license creation error:', error);
+      alert('Failed to create license. Please try again.');
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -174,16 +204,24 @@ export default function DashboardPage() {
                       <p className="text-2xl font-bold text-poshmark-pink">$57</p>
                       <p className="text-sm text-gray-500">One-time payment, lifetime access</p>
                     </div>
-                    <StripeCheckout 
-                      licenseType="first"
-                      onSuccess={() => {
-                        // Refresh the page to show new license
-                        window.location.reload();
-                      }}
-                      onError={(error) => {
-                        alert(`Payment error: ${error}`);
-                      }}
-                    />
+                    <div className="space-y-2">
+                      <StripeCheckout 
+                        licenseType="first"
+                        onSuccess={() => {
+                          // Refresh the page to show new license
+                          window.location.reload();
+                        }}
+                        onError={(error) => {
+                          alert(`Payment error: ${error}`);
+                        }}
+                      />
+                      <button
+                        onClick={handleManualLicenseCreation}
+                        className="w-full bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300"
+                      >
+                        Create License Manually (Test)
+                      </button>
+                    </div>
                   </div>
                 </>
               ) : (
