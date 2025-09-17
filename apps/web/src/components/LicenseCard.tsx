@@ -146,14 +146,14 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
                   <li className="font-semibold">Open the extension and enter your license key</li>
                   <li className="font-semibold">Start using Closet Hopper!</li>
                 </ol>
-                <div className="mt-3">
+                <div className="mt-2">
                   <a 
                     href="https://chrome.google.com/webstore/detail/closet-hopper/[EXTENSION-ID-PLACEHOLDER]" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center bg-gradient-to-r from-poshmark-pink to-pink-600 text-white px-6 py-3 rounded-lg text-lg font-bold hover:from-poshmark-pink-dark hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                    className="inline-flex items-center text-sm font-bold text-blue-600 hover:text-blue-500 bg-white px-4 py-2 rounded-lg border border-blue-200 hover:border-blue-300 transition-colors"
                   >
-                    📥 Download Extension from Chrome Web Store
+                    📥 Download Extension →
                   </a>
                 </div>
               </div>
