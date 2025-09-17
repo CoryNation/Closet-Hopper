@@ -41,6 +41,9 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
       if (response.ok) {
         const data = await response.json()
         setAutoAppliedPromo(data.promoCode)
+        console.log('Auto-applied additional license promo:', data.promoCode)
+      } else {
+        console.log('Additional license promo not available or already used')
       }
     } catch (error) {
       console.error('Failed to fetch additional license promo:', error)

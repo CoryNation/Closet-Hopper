@@ -49,15 +49,35 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   try {
     const { licenseType, userId, promoCodeId } = session.metadata!;
     
+    console.log('Webhook received checkout completion:', {
+      sessionId: session.id,
+      licenseType,
+      userId,
+      promoCodeId,
+      customerEmail: session.customer_email
+    });
+    
     // Generate license key
     const licenseKey = generateLicenseKey();
     
-    // Find user by email (don't create new users here)
+    // Find user by userId from metadata (more reliable than email)
     let user = null;
-    if (session.customer_email) {
+    if (userId) {
+      user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+    }
+    
+    // Fallback to email if userId not found
+    if (!user && session.customer_email) {
       user = await prisma.user.findUnique({
         where: { email: session.customer_email },
       });
+    }
+    
+    if (!user) {
+      console.error('User not found for checkout session:', session.id);
+      return;
     }
     
     // Create license in database
