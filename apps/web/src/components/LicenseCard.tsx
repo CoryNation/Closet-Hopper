@@ -130,9 +130,25 @@ Enjoy using Closet Hopper! ��`
         <div className="space-y-2">
           <div>
             <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">License Key</label>
-            <p className="text-lg text-gray-900 font-mono bg-gray-50 p-2 rounded-lg border-2 border-gray-200 font-bold">
-              {license.key}
-            </p>
+            <div className="relative">
+              <p className="text-lg text-gray-900 font-mono bg-gray-50 p-2 pr-12 rounded-lg border-2 border-gray-200 font-bold">
+                {license.key}
+              </p>
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(license.key)
+                    // Optional: Show a brief success message
+                  } catch (err) {
+                    console.error('Failed to copy license key:', err)
+                  }
+                }}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                title="Copy license key"
+              >
+                📋
+              </button>
+            </div>
           </div>
           
           {license.isGift && license.giftRecipientEmail && (
@@ -189,7 +205,7 @@ Enjoy using Closet Hopper! ��`
                     rel="noopener noreferrer"
                     className="w-full inline-flex items-center justify-center text-sm font-bold text-blue-600 hover:text-blue-500 bg-white px-4 py-2 rounded-lg border border-blue-200 hover:border-blue-300 transition-colors"
                   >
-                    �� Download Extension
+                    📥 Download Extension
                   </a>
                 </div>
               </div>
