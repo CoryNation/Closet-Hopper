@@ -9,7 +9,8 @@
   ],
   "host_permissions": [
     "https://poshmark.com/*",
-    "https://closethopper.com/*"
+    "https://closethopper.com/*",
+    "https://www.ebay.com/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -18,6 +19,11 @@
     {
       "matches": ["https://poshmark.com/*"],
       "js": ["content.js"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://www.ebay.com/sh/lst/*"],
+      "js": ["ebay-content.js"],
       "run_at": "document_end"
     }
   ],
@@ -29,5 +35,14 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["https://poshmark.com/*", "https://www.ebay.com/*"]
+    }
+  ],
+  "externally_connectable": {
+    "matches": ["https://closethopper.com/*"]
   }
 }

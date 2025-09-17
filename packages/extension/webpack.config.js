@@ -4,6 +4,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
     content: './src/content.ts',
+    'ebay-content': './src/ebay-content.ts',
     background: './src/background.ts',
     popup: './src/popup.ts'
   },

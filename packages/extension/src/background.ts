@@ -1,7 +1,6 @@
 // Background script for Closet Hopper extension
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('Closet Hopper extension installed');
 });
 
 // Handle extension icon click

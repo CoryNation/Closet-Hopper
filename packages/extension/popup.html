@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <style>
     body {
-      width: 300px;
+      width: 400px;
       padding: 20px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
@@ -15,95 +15,140 @@
     .logo {
       font-size: 24px;
       font-weight: bold;
-      color: #ff6b6b;
-      margin-bottom: 5px;
+      color: #e6007e;
     }
-    .tagline {
-      font-size: 12px;
-      color: #666;
+    .section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+    }
+    .section h3 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+    .btn {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-primary {
+      background: #e6007e;
+      color: white;
+    }
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+    .btn-info {
+      background: #17a2b8;
+      color: white;
+    }
+    .hidden {
+      display: none;
     }
     .status {
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 15px;
       text-align: center;
-    }
-    .status.licensed {
-      background: #d4edda;
-      color: #155724;
-    }
-    .status.unlicensed {
-      background: #f8d7da;
-      color: #721c24;
-    }
-    .input-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    button {
-      width: 100%;
       padding: 10px;
-      background: #ff6b6b;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      margin: 10px 0;
+    }
+    .workflow-nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .workflow-nav button {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #e0e0e0;
+      background: white;
       cursor: pointer;
-      font-weight: 500;
+      border-radius: 5px;
     }
-    button:hover {
-      background: #ff5252;
-    }
-    .help {
-      font-size: 11px;
-      color: #666;
-      margin-top: 10px;
-      text-align: center;
+    .workflow-nav button.active {
+      background: #e6007e;
+      color: white;
     }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="logo">🦘 Closet Hopper</div>
-    <div class="tagline">Hop your closet from eBay to Poshmark</div>
   </div>
-  
-  <div id="status" class="status unlicensed">
-    License required
+
+  <div id="status" class="status">Checking license...</div>
+
+  <!-- License Activation (shown when not licensed) -->
+  <div id="licenseSection">
+    <input type="text" id="licenseKey" placeholder="Enter your license key" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+    <button id="activateButton" class="btn btn-primary">Activate License</button>
   </div>
-  
-  <div id="license-form">
-    <div class="input-group">
-      <label for="license-key">License Key:</label>
-      <input type="text" id="license-key" placeholder="XXXX-XXXX-XXXX-XXXX">
+
+  <!-- Workflow Options (shown when licensed) -->
+  <div id="workflowContainer" class="hidden">
+    <div class="workflow-nav">
+      <button id="downloadBtn" class="active">📥 Download</button>
+      <button id="uploadBtn">📤 Upload</button>
     </div>
-    <div class="input-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" placeholder="your@email.com">
+
+    <!-- Download Section -->
+    <div id="downloadSection">
+      <div class="section">
+        <h3>📥 Download from eBay</h3>
+        <p>Choose which eBay listings to download:</p>
+        
+        <button id="activeListings" class="btn btn-primary">Active Listings</button>
+        <button id="unsoldListings" class="btn btn-secondary">Unsold Listings</button>
+        <button id="draftListings" class="btn btn-secondary">Draft Listings</button>
+        <button id="scheduledListings" class="btn btn-secondary">Scheduled Listings</button>
+      </div>
+
+      <div class="section">
+        <h3>⚙️ Download Settings</h3>
+        <p>Select what data to download:</p>
+        
+        <label><input type="checkbox" checked> Category & Subcategory</label><br>
+        <label><input type="checkbox" checked> Brand</label><br>
+        <label><input type="checkbox" checked> Price</label><br>
+        <label><input type="checkbox" checked> Size</label><br>
+        <label><input type="checkbox" checked> Condition (New w/ Tags)</label><br>
+        <label><input type="checkbox" checked> Colors</label><br>
+        <label><input type="checkbox" checked> Style Tags</label><br>
+        <label><input type="checkbox" checked> Title</label><br>
+        <label><input type="checkbox" checked> Description</label><br>
+        <label><input type="checkbox" checked> Photos</label><br>
+        
+        <button id="startDownload" class="btn btn-success" style="margin-top: 10px;">Start Download</button>
+      </div>
     </div>
-    <button id="activate-btn">Activate License</button>
+
+    <!-- Upload Section -->
+    <div id="uploadSection" class="hidden">
+      <div class="section">
+        <h3>📤 Upload to Poshmark</h3>
+        <p>Upload your downloaded listings to Poshmark:</p>
+        
+        <button id="poshmarkFeed" class="btn btn-info">Go to Poshmark</button>
+        <button id="startUpload" class="btn btn-success">Start Upload Process</button>
+      </div>
+
+      <div class="section">
+        <h3>📁 Select Downloaded Data</h3>
+        <p>Choose which downloaded listings to upload:</p>
+        <input type="file" id="listingFile" accept=".json" style="width: 100%; margin: 10px 0;">
+        <button id="loadListings" class="btn btn-secondary">Load Listings</button>
+      </div>
+    </div>
   </div>
-  
-  <div id="licensed-content" style="display: none;">
-    <p>✅ License active!</p>
-    <p>Go to Poshmark's create listing page and drag your exported folders.</p>
-  </div>
-  
-  <div class="help">
-    <a href="https://closethopper.com" target="_blank">Get License</a> • 
-    <a href="https://closethopper.com/help" target="_blank">Help</a>
-  </div>
-  
+
   <script src="popup.js"></script>
 </body>
 </html>
