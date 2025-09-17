@@ -5,7 +5,6 @@ export async function POST(req: NextRequest) {
     const { key, profileHash } = await req.json();
     
     // For now, return a mock response since database isn't set up yet
-    // TODO: Implement actual database logic when database is configured
     return NextResponse.json({ ok: true });
     
   } catch (error) {

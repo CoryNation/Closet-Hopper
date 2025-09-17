@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -142,27 +143,20 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
                 <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside font-medium">
                   <li className="font-semibold">Download the Closet Hopper browser extension</li>
                   <li className="font-semibold">Install it in your browser</li>
-                  <li className="font-semibold">Click "Deploy to Browser" below</li>
-                  <li className="font-semibold">Enter your license key when prompted</li>
+                  <li className="font-semibold">Open the extension and enter your license key</li>
+                  <li className="font-semibold">Start using Closet Hopper!</li>
                 </ol>
-                <div className="mt-2">
+                <div className="mt-3">
                   <a 
-                    href="https://chrome.google.com/webstore/detail/closet-hopper/your-extension-id" 
+                    href="https://chrome.google.com/webstore/detail/closet-hopper/[EXTENSION-ID-PLACEHOLDER]" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-sm font-bold text-blue-600 hover:text-blue-500 bg-white px-4 py-2 rounded-lg border border-blue-200 hover:border-blue-300 transition-colors"
+                    className="inline-flex items-center bg-gradient-to-r from-poshmark-pink to-pink-600 text-white px-6 py-3 rounded-lg text-lg font-bold hover:from-poshmark-pink-dark hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
                   >
-                    📥 Download Extension →
+                    📥 Download Extension from Chrome Web Store
                   </a>
                 </div>
               </div>
-              
-              <button 
-                onClick={() => onDeploy?.(license.id)}
-                className="w-full bg-gradient-to-r from-poshmark-pink to-pink-600 text-white px-6 py-2 rounded-lg text-lg font-bold hover:from-poshmark-pink-dark hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-              >
-                🚀 Deploy to Browser
-              </button>
               
               {!license.isGift && (
                 <button 
@@ -186,7 +180,7 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
                   type="email"
                   value={recipientEmail}
                   onChange={(e) => setRecipientEmail(e.target.value)}
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-poshmark-pink focus:border-poshmark-pink font-medium"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-poshmark-pink focus:border-poshmark-pink font-medium"
                   placeholder="Enter recipient's email"
                 />
               </div>
@@ -198,7 +192,7 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
                 <textarea
                   value={giftMessage}
                   onChange={(e) => setGiftMessage(e.target.value)}
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-poshmark-pink focus:border-poshmark-pink font-medium"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-poshmark-pink focus:border-poshmark-pink font-medium"
                   placeholder="Add a personal message..."
                   rows={3}
                 />
@@ -208,13 +202,13 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
                 <button
                   onClick={handleTransfer}
                   disabled={!recipientEmail.trim() || isTransferring}
-                  className="flex-1 bg-gradient-to-r from-poshmark-pink to-pink-600 text-white px-6 py-2 rounded-lg text-lg font-bold hover:from-poshmark-pink-dark hover:to-pink-700 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="flex-1 bg-gradient-to-r from-poshmark-pink to-pink-600 text-white px-6 py-3 rounded-lg text-lg font-bold hover:from-poshmark-pink-dark hover:to-pink-700 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   {isTransferring ? '🔄 Transferring...' : '🎁 Send Gift'}
                 </button>
                 <button
                   onClick={() => setShowTransferForm(false)}
-                  className="flex-1 bg-gray-200 text-gray-800 px-6 py-2 rounded-lg text-lg font-bold hover:bg-gray-300 border-2 border-gray-300 hover:border-gray-400 transition-all duration-200"
+                  className="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg text-lg font-bold hover:bg-gray-300 border-2 border-gray-300 hover:border-gray-400 transition-all duration-200"
                 >
                   Cancel
                 </button>

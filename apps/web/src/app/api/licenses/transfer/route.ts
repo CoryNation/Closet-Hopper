@@ -51,8 +51,6 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    // TODO: Send email notification to recipient
-    // This would typically send an email with the license key and instructions
 
     return NextResponse.json({
       success: true,

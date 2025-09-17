@@ -9,9 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    console.log('=== Stripe Checkout Session Request ===');
     const body = await req.json();
-    console.log('Request body:', body);
     
     const { licenseType, promoCodeId, successUrl, cancelUrl } = body;
 
@@ -22,14 +20,12 @@ export async function POST(req: NextRequest) {
 
     // Get user from authentication
     const token = getTokenFromRequest(req);
-    console.log('Token found:', !!token);
     if (!token) {
       console.error('No authentication token provided');
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const payload = verifyToken(token);
-    console.log('Token payload:', payload);
     if (!payload) {
       console.error('Invalid token');
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
@@ -48,7 +44,6 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ error: 'Invalid promo code' }, { status: 400 });
         }
         
-        console.log('Found promo code:', promoCode.code, promoCode.discountType, promoCode.discountValue);
       } catch (error) {
         console.error('Error fetching promo code:', error);
         return NextResponse.json({ error: 'Failed to validate promo code' }, { status: 500 });
@@ -94,9 +89,6 @@ export async function POST(req: NextRequest) {
       lineItems[0].price_data.product_data.description = `Free with ${promoCode?.code} promo code`;
     }
 
-    console.log('Creating Stripe session with line items:', lineItems);
-    console.log('Final price:', finalPrice, 'cents');
-    
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -115,7 +107,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log('Stripe session created successfully:', session.id);
     return NextResponse.json({ id: session.id });
   } catch (error) {
     console.error('Stripe checkout session error:', error);
