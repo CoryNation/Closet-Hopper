@@ -48,6 +48,7 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available':
+      case 'active':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'used':
         return 'bg-blue-100 text-blue-800 border-blue-200'
@@ -61,7 +62,8 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
   const getStatusText = (status: string) => {
     switch (status) {
       case 'available':
-        return 'Available'
+      case 'active':
+        return 'Active'
       case 'used':
         return 'Used'
       case 'revoked':
@@ -131,7 +133,7 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
         </div>
         
         <div className="mt-6 space-y-4">
-          {license.status === 'available' && (
+          {(license.status === 'available' || license.status === 'active') && (
             <>
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6 mb-6">
                 <h4 className="text-lg font-bold text-blue-900 mb-4 flex items-center">
