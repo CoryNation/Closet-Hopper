@@ -22,6 +22,11 @@
       "run_at": "document_end"
     },
     {
+      "matches": ["https://poshmark.com/create-listing*"],
+      "js": ["poshmark-content.js"],
+      "run_at": "document_end"
+    },
+    {
       "matches": ["https://www.ebay.com/sh/lst/*"],
       "js": ["ebay-content.js"],
       "run_at": "document_end"

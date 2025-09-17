@@ -95,12 +95,52 @@
   <!-- Workflow Options (shown when licensed) -->
   <div id="workflowContainer" class="hidden">
     <div class="workflow-nav">
-      <button id="downloadBtn" class="active">📥 Download</button>
+      <button id="manageBtn" class="active">📋 Manage</button>
+      <button id="downloadBtn">📥 Download</button>
       <button id="uploadBtn">📤 Upload</button>
     </div>
 
+    <!-- Management Section -->
+    <div id="manageSection">
+      <div class="section">
+        <h3>📋 Manage Downloaded Listings</h3>
+        <p>View and manage your downloaded eBay listings:</p>
+        
+        <div style="margin: 10px 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <span style="font-size: 12px; color: #666;">Total: <span id="totalListings">0</span></span>
+            <div>
+              <button id="selectAll" class="btn btn-secondary" style="padding: 5px 10px; margin: 0 2px; font-size: 11px;">Select All</button>
+              <button id="clearSelection" class="btn btn-secondary" style="padding: 5px 10px; margin: 0 2px; font-size: 11px;">Clear</button>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+            <select id="statusFilter" style="flex: 1; padding: 5px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px;">
+              <option value="">All Status</option>
+              <option value="downloaded">Downloaded</option>
+              <option value="edited">Edited</option>
+              <option value="listed">Listed</option>
+              <option value="archived">Archived</option>
+            </select>
+            <button id="applyFilter" class="btn btn-info" style="padding: 5px 10px; font-size: 11px;">Filter</button>
+          </div>
+        </div>
+
+        <div id="listingsList" style="max-height: 200px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 5px; padding: 10px; background: #f9f9f9;">
+          <!-- Listings will be populated here -->
+        </div>
+
+        <div style="margin-top: 10px;">
+          <button id="bulkEdit" class="btn btn-secondary" style="margin: 2px; padding: 8px; font-size: 12px;">✏️ Edit Selected</button>
+          <button id="bulkDelete" class="btn btn-secondary" style="margin: 2px; padding: 8px; font-size: 12px; background: #dc3545;">🗑️ Delete</button>
+          <button id="bulkArchive" class="btn btn-secondary" style="margin: 2px; padding: 8px; font-size: 12px; background: #6c757d;">📦 Archive Listed</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Download Section -->
-    <div id="downloadSection">
+    <div id="downloadSection" class="hidden">
       <div class="section">
         <h3>📥 Download from eBay</h3>
         <p>Choose which eBay listings to download:</p>
