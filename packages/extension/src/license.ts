@@ -1,6 +1,6 @@
 // License management for Closet Hopper extension
 
-const API_BASE = 'https://closethopper.com/api';
+const API_BASE = 'https://closethopper.com/api'; // Your custom domain
 
 export async function generateProfileHash(): Promise<string> {
   // Generate a stable hash for this browser profile
