@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from '@/lib/prisma';
 import { verifyToken, getTokenFromRequest } from '@/lib/auth';
 
@@ -58,6 +58,20 @@ export async function POST(req: NextRequest) {
         { error: 'This promo code has reached its usage limit' },
         { status: 400 }
       );
+    }
+
+    // Special protection for ADDITIONAL40 - only allow for users who already have licenses
+    if (promoCode.code === 'ADDITIONAL40') {
+      const userLicenses = await prisma.license.findMany({
+        where: { userId: payload.id }
+      });
+      
+      if (userLicenses.length === 0) {
+        return NextResponse.json(
+          { error: 'This promo code is only available for existing customers purchasing additional licenses' },
+          { status: 400 }
+        );
+      }
     }
 
     // Check if user has already used this promo code

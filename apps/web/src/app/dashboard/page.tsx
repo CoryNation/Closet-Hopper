@@ -114,7 +114,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -136,7 +136,7 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 flex-1">
         <div className="px-4 py-6 sm:px-0">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Your Licenses</h1>
@@ -187,48 +187,79 @@ export default function DashboardPage() {
                   </div>
                 </>
               ) : (
-                // Additional license purchase
-                <>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">
-                    Buy Additional Licenses
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    Purchase additional licenses for other browsers, team members, or as gifts. 
-                    Additional licenses are discounted 40% from the original price.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-2xl font-bold text-poshmark-pink">$34</p>
-                      <p className="text-sm text-gray-500">40% off original price</p>
+                // Additional license purchase - improved layout
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                  {/* Left side - Description (60% width) */}
+                  <div className="lg:col-span-3">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                      🎉 Get Additional Licenses at a <span className="text-poshmark-pink">Massive Discount!</span>
+                    </h3>
+                    <p className="text-lg text-gray-700 mb-6">
+                      As a valued customer, you get <strong>40% off</strong> additional licenses! 
+                      Perfect for expanding your business or helping other sellers.
+                    </p>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-6 h-6 bg-poshmark-pink rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-bold">1</span>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900">Use on Additional Browsers</h4>
+                          <p className="text-gray-600">Install Closet Hopper on Chrome, Firefox, Safari, or Edge</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-6 h-6 bg-poshmark-pink rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-bold">2</span>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900">Gift to Other Sellers</h4>
+                          <p className="text-gray-600">Help friends or family members start their Poshmark journey</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-6 h-6 bg-poshmark-pink rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-bold">3</span>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900">Business Expansion</h4>
+                          <p className="text-gray-600">Use for multiple businesses or team members</p>
+                        </div>
+                      </div>
                     </div>
-                    <StripeCheckout 
-                      licenseType="additional"
-                      onSuccess={() => {
-                        // Refresh the page to show new license
-                        window.location.reload();
-                      }}
-                      onError={(error) => {
-                        alert(`Payment error: ${error}`);
-                      }}
-                    />
                   </div>
-                </>
+                  
+                  {/* Right side - Purchase (40% width) */}
+                  <div className="lg:col-span-2">
+                    <div className="bg-gray-50 rounded-lg p-6">
+                      <div className="text-center mb-6">
+                        <div className="text-3xl font-bold text-poshmark-pink mb-2">$34</div>
+                        <div className="text-sm text-gray-500 line-through">$57</div>
+                        <div className="text-sm font-medium text-green-600">40% OFF</div>
+                      </div>
+                      
+                      <StripeCheckout 
+                        licenseType="additional"
+                        onSuccess={() => {
+                          // Refresh the page to show new license
+                          window.location.reload();
+                        }}
+                        onError={(error) => {
+                          alert(`Payment error: ${error}`);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h4 className="font-medium text-gray-900 mb-2">Get Help</h4>
-              <p className="text-sm text-gray-600 mb-4">
-                Need assistance with Closet Hopper?
-              </p>
-              <button className="text-poshmark-pink hover:text-poshmark-pink-dark text-sm font-medium">
-                Contact Support →
-              </button>
-            </div>
-            
+          {/* Quick Actions - Removed Get Help section */}
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
             <div className="bg-white p-6 rounded-lg shadow">
               <h4 className="font-medium text-gray-900 mb-2">Tutorial</h4>
               <p className="text-sm text-gray-600 mb-4">
@@ -251,6 +282,22 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-2 mb-4 md:mb-0">
+              <span className="text-2xl">🦘</span>
+              <span className="text-xl font-bold text-poshmark-pink">Closet Hopper</span>
+            </div>
+            <div className="text-sm text-gray-500 text-center md:text-right">
+              <p>eBay and Poshmark are registered trademarks of their respective companies.</p>
+              <p className="mt-1">© 2024 Closet Hopper. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

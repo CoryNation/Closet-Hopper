@@ -112,7 +112,7 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
   }
 
   const calculatePrice = () => {
-    const basePrice = licenseType === 'first' ? 5700 : 3400 // in cents
+    const basePrice = licenseType === 'first' ? 5700 : 5700 // Both should use $57 as base price
     const promo = appliedPromo || autoAppliedPromo
     if (!promo) return basePrice
 
@@ -134,30 +134,12 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
 
   return (
     <div className="space-y-4">
-      {autoAppliedPromo && !appliedPromo && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-green-800">
-                Auto-applied discount: {autoAppliedPromo.code}
-              </p>
-              <p className="text-sm text-green-600">
-                {autoAppliedPromo.discountType === 'percentage' 
-                  ? `${autoAppliedPromo.discountValue}% off`
-                  : autoAppliedPromo.discountType === 'fixed'
-                  ? `$${(autoAppliedPromo.discountValue / 100).toFixed(2)} off`
-                  : 'Free license'
-                }
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       <PromoCodeInput
         onPromoApplied={setAppliedPromo}
         onPromoRemoved={() => setAppliedPromo(null)}
         appliedPromo={appliedPromo}
+        preFilledCode={licenseType === 'additional' ? 'ADDITIONAL40' : undefined}
+        isReadOnly={licenseType === 'additional'}
       />
       
       <button
