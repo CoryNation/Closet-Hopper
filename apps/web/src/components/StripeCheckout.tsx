@@ -41,9 +41,6 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
       if (response.ok) {
         const data = await response.json()
         setAutoAppliedPromo(data.promoCode)
-        console.log('Auto-applied additional license promo:', data.promoCode)
-      } else {
-        console.log('Additional license promo not available or already used')
       }
     } catch (error) {
       console.error('Failed to fetch additional license promo:', error)
@@ -79,8 +76,6 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
         cancelUrl: `${window.location.origin}/pricing?canceled=true`,
       };
       
-      console.log('Creating checkout session with:', requestBody);
-      
       const response = await fetch('/api/stripe/create-checkout-session', {
         method: 'POST',
         headers: {
@@ -93,7 +88,6 @@ export default function StripeCheckout({ licenseType, onSuccess, onError }: Stri
       const session = await response.json()
       
       if (!response.ok) {
-        console.error('API Error Response:', session);
         throw new Error(session.error || `HTTP ${response.status}: ${response.statusText}`)
       }
       
