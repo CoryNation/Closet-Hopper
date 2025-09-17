@@ -110,6 +110,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     chrome.tabs.create({ url: 'https://poshmark.com/create-listing' });
   });
 
+  // Download section event listeners
+  document.getElementById('startDownload')?.addEventListener('click', () => {
+    // Send message to content script to start extraction
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]?.id) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'extractListings' });
+      }
+    });
+  });
+
+  document.getElementById('toggleTopBar')?.addEventListener('click', () => {
+    // Send message to content script to toggle top bar
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]?.id) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'toggleTopBar' });
+      }
+    });
+  });
+
   // Listing management functions
   async function loadListings() {
     try {
