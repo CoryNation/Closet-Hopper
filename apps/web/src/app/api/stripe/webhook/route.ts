@@ -28,9 +28,6 @@ export async function POST(req: NextRequest) {
       case 'checkout.session.completed':
         await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
         break;
-      case 'payment_intent.succeeded':
-        await handlePaymentSucceeded(event.data.object as Stripe.PaymentIntent);
-        break;
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
@@ -57,6 +54,16 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       customerEmail: session.customer_email
     });
     
+    // Check if license already exists for this session (idempotency)
+    const existingLicense = await prisma.license.findFirst({
+      where: { stripeSessionId: session.id }
+    });
+    
+    if (existingLicense) {
+      console.log('License already exists for session:', session.id);
+      return;
+    }
+    
     // Generate license key
     const licenseKey = generateLicenseKey();
     
@@ -80,12 +87,12 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       return;
     }
     
-    // Create license in database
+    // Create license in database with 'active' status
     const license = await prisma.license.create({
       data: {
         key: licenseKey,
         plan: licenseType || 'first',
-        status: 'available',
+        status: 'active', // Changed from 'available' to 'active'
         userId: user?.id,
         stripePaymentIntentId: session.payment_intent as string,
         stripeSessionId: session.id,
@@ -124,11 +131,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   } catch (error) {
     console.error('Error handling checkout completion:', error);
   }
-}
-
-async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
-  // Handle successful payment
-  console.log('Payment succeeded:', paymentIntent.id);
 }
 
 function generateLicenseKey(): string {

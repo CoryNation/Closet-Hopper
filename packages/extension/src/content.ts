@@ -129,7 +129,7 @@ class PoshmarkAssistant {
       if (item.kind === 'file') {
         const entry = item.webkitGetAsEntry();
         if (entry?.isDirectory) {
-          await this.processFolder(entry);
+          await this.processFolder(entry as FileSystemDirectoryEntry);
         }
       }
     }

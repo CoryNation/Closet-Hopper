@@ -8,7 +8,8 @@
     "activeTab"
   ],
   "host_permissions": [
-    "https://poshmark.com/*"
+    "https://poshmark.com/*",
+    "https://closethopper.com/*"
   ],
   "background": {
     "service_worker": "background.js"
