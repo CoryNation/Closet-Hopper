@@ -32,6 +32,7 @@ export default function LicenseCard({ license, onTransfer, onDeploy }: LicenseCa
   const [isTransferring, setIsTransferring] = useState(false)
   const [transferLink, setTransferLink] = useState('')
   const [showTransferLink, setShowTransferLink] = useState(false)
+  const [showCopyMessage, setShowCopyMessage] = useState(false)
 
   const handleTransfer = async () => {
     if (!recipientEmail.trim()) return
@@ -138,7 +139,8 @@ Enjoy using Closet Hopper! ��`
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(license.key)
-                    // Optional: Show a brief success message
+                    setShowCopyMessage(true)
+                    setTimeout(() => setShowCopyMessage(false), 2000) // Hide after 2 seconds
                   } catch (err) {
                     console.error('Failed to copy license key:', err)
                   }
@@ -148,6 +150,13 @@ Enjoy using Closet Hopper! ��`
               >
                 📋
               </button>
+              
+              {/* Copy confirmation message */}
+              {showCopyMessage && (
+                <div className="absolute -top-8 right-0 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded shadow-lg z-10">
+                  License Copied
+                </div>
+              )}
             </div>
           </div>
           
